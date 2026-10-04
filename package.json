@@ -1,0 +1,19 @@
+{
+  "name": "offres-alternance",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Interface de presentation des offres d'alternance",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.{ts,css}\" \"*.{ts,json,md,html}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.9.6",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2"
+  }
+}

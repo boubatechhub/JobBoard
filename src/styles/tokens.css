@@ -1,0 +1,126 @@
+/**
+ * Design tokens — « Le Registre ».
+ *
+ * Direction : encre et papier, une seule famille typographique, un seul accent.
+ * Toute couleur, espacement, rayon, ombre et courbe de l'interface vient d'ici.
+ *
+ * REGLE DES RAYONS : conteneurs 10px, controles 6px, etiquettes 4px,
+ * pilules reservees aux pastilles et aux badges. Aucune autre valeur.
+ *
+ * REGLE D'ELEVATION : une seule declaration par element, un filet OU une ombre.
+ * Les ombres sont reservees a ce qui flotte reellement au-dessus de la page
+ * (barre collante, panneau mobile). Le reste se separe au filet.
+ *
+ * THEME : `data-theme` sur `<html>` decide, pose par le script inline
+ * d'`index.html` avant le premier paint (choix memorise dans `localStorage`,
+ * sinon preference systeme). Ce fichier ne connait donc que deux blocs, clair
+ * en base et sombre en surcharge — aucune requete media ici, `lib/theme.ts`
+ * est seul responsable de resoudre la preference systeme.
+ */
+:root {
+  color-scheme: light;
+
+  /* --- Surfaces et filets --- */
+  --papier: #fbfbfa;
+  --surface: #ffffff;
+  --surface-2: #f4f4f3;
+  --survol: #f7f7f6;
+  --trait: #e6e6e3;
+  --trait-fort: #d2d2ce;
+
+  /* --- Encres --- */
+  --encre: #101211;
+  --encre-2: #4e5350;
+  --encre-3: #6b706d;
+
+  /* --- Accent unique --- */
+  --accent: #14684c;
+  --accent-fort: #0e5039;
+  --accent-doux: #e6f1ec;
+  --accent-contraste: #ffffff;
+
+  /* --- Statuts --- */
+  --alerte: #9c3d16;
+  --alerte-doux: #fbeee7;
+
+  /* --- Typographie --- */
+  --police: 'Schibsted Grotesk', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --police-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', 'SF Mono', Menlo, monospace;
+
+  --t-11: 0.6875rem;
+  --t-12: 0.75rem;
+  --t-13: 0.8125rem;
+  --t-14: 0.875rem;
+  --t-15: 0.9375rem;
+  --t-17: 1.0625rem;
+  --t-20: 1.25rem;
+  --t-26: 1.625rem;
+  --t-34: 2.125rem;
+
+  /* --- Espacements, echelle de 4 px --- */
+  --e-1: 0.25rem;
+  --e-2: 0.5rem;
+  --e-3: 0.75rem;
+  --e-4: 1rem;
+  --e-5: 1.25rem;
+  --e-6: 1.5rem;
+  --e-7: 2rem;
+  --e-8: 2.5rem;
+  --e-9: 3.5rem;
+  --e-10: 5rem;
+
+  /* --- Rayons --- */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-pilule: 999px;
+
+  /* --- Ombres : uniquement pour ce qui flotte --- */
+  --ombre-flottant: 0 1px 2px rgb(16 18 17 / 6%), 0 12px 32px -8px rgb(16 18 17 / 14%);
+  --ombre-pouce: 0 1px 2px rgb(16 18 17 / 10%);
+  --pouce: #ffffff;
+  --ombre-panneau: 0 -2px 8px rgb(16 18 17 / 5%), 0 -24px 48px -16px rgb(16 18 17 / 18%);
+
+  /* --- Mouvement --- */
+  --sortie: cubic-bezier(0.23, 1, 0.32, 1);
+  --entree-sortie: cubic-bezier(0.77, 0, 0.175, 1);
+  --tiroir: cubic-bezier(0.32, 0.72, 0, 1);
+  --d-instant: 100ms;
+  --d-rapide: 140ms;
+  --d-normal: 180ms;
+  --d-lent: 260ms;
+
+  /* --- Trame --- */
+  --largeur-max: 1240px;
+  --largeur-rail: 280px;
+  --h-entete: 60px;
+  --anneau: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --papier: #0c0d0d;
+  --surface: #131514;
+  --surface-2: #1a1d1c;
+  --survol: #1e2120;
+  --trait: #262a28;
+  --trait-fort: #3a3f3c;
+
+  --encre: #edefee;
+  --encre-2: #a3a9a5;
+  --encre-3: #838986;
+
+  --accent: #4fd1a0;
+  --accent-fort: #6bdcb1;
+  --accent-doux: #10231c;
+  --accent-contraste: #06120d;
+
+  --alerte: #f0a077;
+  --alerte-doux: #241610;
+
+  --ombre-flottant: 0 1px 2px rgb(0 0 0 / 50%), 0 12px 32px -8px rgb(0 0 0 / 60%);
+  --ombre-pouce: 0 1px 2px rgb(0 0 0 / 40%);
+  --pouce: #2c312f;
+  --ombre-panneau: 0 -2px 8px rgb(0 0 0 / 40%), 0 -24px 48px -16px rgb(0 0 0 / 60%);
+}

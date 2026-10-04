@@ -1,0 +1,556 @@
+/* Trame des pages : barre haute, rail de filtres, registre, fiche. */
+
+/* ------------------------------------------------------------------ */
+/* Barre haute                                                         */
+/* ------------------------------------------------------------------ */
+
+.entete {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background-color: var(--papier);
+  border-bottom: 1px solid var(--trait);
+}
+
+.entete__contenu {
+  display: flex;
+  align-items: center;
+  gap: var(--e-4);
+  width: 100%;
+  max-width: var(--largeur-max);
+  height: var(--h-entete);
+  margin-inline: auto;
+  padding-inline: var(--e-5);
+}
+
+.marque {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  flex-shrink: 0;
+  color: var(--encre);
+  font-size: var(--t-15);
+  font-weight: 560;
+  letter-spacing: -0.02em;
+}
+
+.marque__signe {
+  color: var(--accent);
+}
+
+.marque__signe svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* --- Champ de recherche : l'ancre visuelle de la barre --- */
+
+.quete {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  max-width: 540px;
+  margin-inline: auto;
+}
+
+.quete__icone {
+  position: absolute;
+  top: 50%;
+  left: 11px;
+  translate: 0 -50%;
+  color: var(--encre-3);
+  pointer-events: none;
+  transition: color var(--d-rapide) var(--sortie);
+}
+
+.quete__icone svg {
+  width: 16px;
+  height: 16px;
+}
+
+.quete__champ {
+  width: 100%;
+  height: 38px;
+  padding: 0 var(--e-8) 0 34px;
+  background-color: var(--surface-2);
+  border: 1px solid var(--trait);
+  border-radius: var(--r-sm);
+  font-size: var(--t-13);
+  transition:
+    border-color var(--d-rapide) var(--sortie),
+    background-color var(--d-rapide) var(--sortie),
+    box-shadow var(--d-rapide) var(--sortie);
+}
+
+.quete__champ::placeholder {
+  color: var(--encre-3);
+}
+
+.quete__champ::-webkit-search-cancel-button {
+  display: none;
+}
+
+.quete__champ:hover {
+  border-color: var(--trait-fort);
+}
+
+.quete__champ:focus {
+  background-color: var(--surface);
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: var(--anneau);
+}
+
+.quete:focus-within .quete__icone {
+  color: var(--accent);
+}
+
+/* Raccourci clavier : disparait des que le champ sert. */
+.quete__touche {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  translate: 0 -50%;
+  padding: 1px 6px;
+  background-color: var(--surface);
+  border: 1px solid var(--trait);
+  border-radius: var(--r-xs);
+  color: var(--encre-3);
+  font-family: var(--police-mono);
+  font-size: var(--t-11);
+  pointer-events: none;
+  transition: opacity var(--d-rapide) var(--sortie);
+}
+
+.quete:focus-within .quete__touche {
+  opacity: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Page de recherche                                                   */
+/* ------------------------------------------------------------------ */
+
+.layout {
+  display: grid;
+  grid-template-columns: var(--largeur-rail) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--e-8);
+  width: 100%;
+  max-width: var(--largeur-max);
+  margin-inline: auto;
+  padding: var(--e-7) var(--e-5) var(--e-10);
+}
+
+/* --- Rail de filtres : aucun encadrement, uniquement des filets --- */
+
+.rail {
+  position: sticky;
+  top: calc(var(--h-entete) + var(--e-6));
+  max-height: calc(100dvh - var(--h-entete) - var(--e-9));
+  overflow-y: auto;
+  padding-right: var(--e-3);
+  padding-bottom: var(--e-4);
+}
+
+.rail__tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-3);
+  padding-bottom: var(--e-3);
+  border-bottom: 1px solid var(--trait);
+}
+
+.rail__titre {
+  font-size: var(--t-13);
+  font-weight: 560;
+}
+
+.rail__fermer.signet {
+  display: none;
+}
+
+.groupe {
+  min-width: 0;
+  margin: 0;
+  padding: var(--e-5) 0;
+  border: 0;
+  border-bottom: 1px solid var(--trait);
+}
+
+.groupe:last-of-type {
+  border-bottom: 0;
+}
+
+.groupe__titre {
+  display: block;
+  margin-bottom: var(--e-3);
+  padding: 0;
+  color: var(--encre-3);
+  font-size: var(--t-11);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.groupe__corps {
+  display: grid;
+  gap: var(--e-3);
+}
+
+/* Confirmation du panneau mobile : sans objet quand le rail est permanent. */
+.rail__pied {
+  display: none;
+}
+
+/* --- Colonne de resultats --- */
+
+.resultats {
+  display: grid;
+  gap: var(--e-5);
+  min-width: 0;
+  scroll-margin-top: calc(var(--h-entete) + var(--e-4));
+}
+
+.resultats__tete {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--e-4);
+  flex-wrap: wrap;
+}
+
+.resultats__titre {
+  font-size: var(--t-26);
+}
+
+.resultats__compteur {
+  margin-top: var(--e-1);
+  color: var(--encre-2);
+  font-size: var(--t-13);
+}
+
+.barre-mobile {
+  display: none;
+}
+
+/* Voile du panneau mobile : hors flux en permanence, sinon il occuperait une
+   colonne de la grille sur grand ecran. */
+.voile {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background-color: rgb(16 18 17 / 40%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--d-normal) var(--sortie),
+    visibility var(--d-normal);
+}
+
+/* ------------------------------------------------------------------ */
+/* Le registre : une seule elevation, des lignes a l'interieur         */
+/* ------------------------------------------------------------------ */
+
+.registre {
+  background-color: var(--surface);
+  border: 1px solid var(--trait);
+  border-radius: var(--r-md);
+}
+
+.registre > :first-child {
+  border-top-left-radius: var(--r-md);
+  border-top-right-radius: var(--r-md);
+}
+
+.registre > :last-child {
+  border-bottom: 0;
+  border-bottom-left-radius: var(--r-md);
+  border-bottom-right-radius: var(--r-md);
+}
+
+/* ------------------------------------------------------------------ */
+/* Fiche d'offre                                                       */
+/* ------------------------------------------------------------------ */
+
+.fiche {
+  width: 100%;
+  max-width: 1040px;
+  margin-inline: auto;
+  padding: var(--e-6) var(--e-5) var(--e-10);
+}
+
+.retour {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  margin-bottom: var(--e-6);
+  color: var(--encre-3);
+  font-size: var(--t-13);
+  font-weight: 500;
+  transition: color var(--d-rapide) var(--sortie);
+}
+
+.retour svg {
+  width: 14px;
+  height: 14px;
+}
+
+.retour:hover {
+  color: var(--encre);
+}
+
+.fiche__tete {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--e-4);
+  padding-bottom: var(--e-6);
+  border-bottom: 1px solid var(--trait);
+}
+
+.fiche__entreprise {
+  color: var(--encre-2);
+  font-size: var(--t-13);
+  font-weight: 500;
+}
+
+.fiche__titre {
+  margin-top: var(--e-1);
+  font-size: var(--t-34);
+  line-height: 1.1;
+}
+
+.fiche__faits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2) var(--e-5);
+  margin-top: var(--e-4);
+}
+
+.fiche__corps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 316px;
+  align-items: start;
+  gap: var(--e-8);
+  margin-top: var(--e-7);
+}
+
+.fiche__contenu {
+  display: grid;
+}
+
+.section {
+  display: grid;
+  gap: var(--e-4);
+  padding-block: var(--e-6);
+  border-bottom: 1px solid var(--trait);
+}
+
+.section:first-child {
+  padding-top: 0;
+}
+
+.section:last-child {
+  border-bottom: 0;
+}
+
+.section__titre {
+  font-size: var(--t-13);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--encre-3);
+}
+
+.fiche__rail {
+  position: sticky;
+  top: calc(var(--h-entete) + var(--e-5));
+  display: grid;
+  gap: var(--e-5);
+}
+
+.fiche__alerte {
+  margin-top: var(--e-4);
+}
+
+/**
+ * Barre de candidature : uniquement sous 1000 px, la ou le rail n'est plus
+ * colle. Au-dessus, l'action reste visible dans le rail.
+ */
+.barre-postuler {
+  display: none;
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 40;
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--trait);
+  translate: 0 -100%;
+  visibility: hidden;
+  transition:
+    translate var(--d-normal) var(--sortie),
+    visibility var(--d-normal);
+}
+
+.barre-postuler[data-visible='true'] {
+  translate: 0 0;
+  visibility: visible;
+}
+
+.barre-postuler__contenu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-4);
+  max-width: 1040px;
+  height: var(--h-entete);
+  margin-inline: auto;
+  padding-inline: var(--e-5);
+}
+
+.barre-postuler__titre {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--t-14);
+  font-weight: 560;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barre-postuler__entreprise {
+  color: var(--encre-3);
+  font-weight: 400;
+}
+
+/* ------------------------------------------------------------------ */
+/* Adaptations                                                         */
+/* ------------------------------------------------------------------ */
+
+/* Tablette : le rail devient un panneau, la colonne prend toute la largeur. */
+@media (max-width: 1000px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--e-5);
+    padding-top: var(--e-5);
+  }
+
+  .barre-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-3);
+  }
+
+  .rail {
+    position: fixed;
+    inset: auto 0 0 0;
+    top: auto;
+    z-index: 50;
+    max-height: 84dvh;
+    padding: var(--e-5) var(--e-5) var(--e-8);
+    background-color: var(--surface);
+    border-radius: var(--r-md) var(--r-md) 0 0;
+    box-shadow: var(--ombre-panneau);
+    translate: 0 100%;
+    visibility: hidden;
+    transition:
+      translate var(--d-lent) var(--tiroir),
+      visibility var(--d-lent);
+  }
+
+  .layout--filtres-ouverts .rail {
+    translate: 0 0;
+    visibility: visible;
+  }
+
+  .rail__tete {
+    position: sticky;
+    top: calc(var(--e-5) * -1);
+    z-index: 1;
+    margin-top: calc(var(--e-5) * -1);
+    padding-top: var(--e-5);
+    background-color: var(--surface);
+  }
+
+  .rail__fermer.signet {
+    display: inline-flex;
+  }
+
+  .rail__pied {
+    position: sticky;
+    bottom: calc(var(--e-8) * -1);
+    display: block;
+    margin: 0 calc(var(--e-5) * -1) calc(var(--e-8) * -1);
+    padding: var(--e-4) var(--e-5) var(--e-5);
+    background-color: var(--surface);
+    border-top: 1px solid var(--trait);
+  }
+
+  .layout--filtres-ouverts .voile {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .barre-postuler {
+    display: block;
+  }
+
+  .fiche__corps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--e-6);
+  }
+
+  .fiche__rail {
+    position: static;
+  }
+}
+
+/* Mobile : barre haute sur deux lignes, fiche en pleine largeur. */
+@media (max-width: 720px) {
+  .entete__contenu {
+    height: auto;
+    flex-wrap: wrap;
+    padding-block: var(--e-3);
+    row-gap: var(--e-3);
+  }
+
+  .quete {
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  .quete__touche {
+    display: none;
+  }
+
+  .entete {
+    position: static;
+  }
+
+  .rail {
+    top: auto;
+  }
+
+  .layout,
+  .fiche {
+    padding-inline: var(--e-4);
+  }
+
+  .fiche__tete {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fiche__titre {
+    font-size: var(--t-26);
+  }
+
+  .resultats__titre {
+    font-size: var(--t-20);
+  }
+
+  .barre-postuler__contenu {
+    padding-inline: var(--e-4);
+  }
+}
