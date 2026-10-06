@@ -35,7 +35,7 @@ export const TOUS = 'tous';
 export type Tous = typeof TOUS;
 
 /** Fenetre de fraicheur d'une offre, en jours. */
-export type FenetrePublication = Tous | '1' | '7' | '14' | '30';
+export type FenetrePublication = Tous | '1' | '7' | '30';
 
 /**
  * Les criteres se limitent a ce que le flux permet de trancher. Ajouter un
@@ -44,16 +44,17 @@ export type FenetrePublication = Tous | '1' | '7' | '14' | '30';
 export interface Filtres {
   recherche: string;
   contractType: string | Tous;
+  source: string | Tous;
   publiee: FenetrePublication;
-  /** Restreint aux offres sauvegardees par l'utilisateur. */
   sauvegardees: boolean;
 }
 
-export type CritereTri = 'pertinence' | 'recent' | 'ancien';
+export type CritereTri = 'pertinence' | 'recent';
 
 export const FILTRES_VIDES: Filtres = {
   recherche: '',
   contractType: TOUS,
+  source: TOUS,
   publiee: TOUS,
   sauvegardees: false,
 };

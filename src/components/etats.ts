@@ -16,6 +16,7 @@ export function etatChargement(nombre = 7): string {
           <div class="os os--titre"></div>
           <div class="os os--ligne"></div>
           <div class="os os--faits"></div>
+          <div class="os os--ligne"></div>
         </div>
         <div><div class="os os--cote"></div></div>
       </div>
@@ -72,11 +73,10 @@ export function etatVide(criteresActifs: boolean): string {
     <div class="etat" role="status">
       <p class="etat__titre">Rien ne correspond à ces critères</p>
       <p class="etat__texte">
-        Retirez un critère en cliquant sur sa pastille au-dessus de la liste, ou
-        repartez de zéro.
+        Essayez de retirer un filtre ou de modifier les mots recherchés.
       </p>
       <button type="button" class="bouton bouton--secondaire etat__action" data-action="reinitialiser">
-        Effacer tous les critères
+        Réinitialiser les filtres
       </button>
     </div>
   `;

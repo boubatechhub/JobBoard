@@ -1,7 +1,15 @@
 import type { Job } from '../types/job';
 import { carteJob } from './carte-job';
+import type { OptionsCarteJob } from './carte-job';
 import { etatVide } from './etats';
-import { PAR_PAGE, pagination } from './pagination';
+
+export interface OptionsListeJobs {
+  nombreAffichees: number;
+  total: number;
+  criteresActifs: boolean;
+  premierRendu: boolean;
+  optionsCarte: (job: Job) => OptionsCarteJob;
+}
 
 /**
  * Le registre, page par page.
@@ -13,25 +21,29 @@ import { PAR_PAGE, pagination } from './pagination';
 export function listeJobs(
   jobs: Job[],
   sauvegardes: Set<string>,
-  criteresActifs: boolean,
-  premierRendu: boolean,
-  page = 1,
+  options: OptionsListeJobs,
 ): string {
   if (jobs.length === 0) {
-    return `<div class="registre">${etatVide(criteresActifs)}</div>`;
+    return `<div class="registre">${etatVide(options.criteresActifs)}</div>`;
   }
 
-  const debut = (page - 1) * PAR_PAGE;
-  const visibles = jobs.slice(debut, debut + PAR_PAGE);
+  const visibles = jobs.slice(0, options.nombreAffichees);
 
   const lignes = visibles
-    .map((job, index) => carteJob(job, sauvegardes.has(job.id), index))
+    .map(
+      (job, index) =>
+        `<li>${carteJob(job, sauvegardes.has(job.id), index, options.optionsCarte(job))}</li>`,
+    )
     .join('');
 
   return `
-    <div class="registre${premierRendu ? ' registre--entrant' : ''}">
+    <ul class="liste-offres registre${options.premierRendu ? ' registre--entrant' : ''}" id="liste-offres" aria-label="Offres d’emploi">
       ${lignes}
-      ${pagination(page, jobs.length)}
-    </div>
+    </ul>
+    ${
+      options.nombreAffichees < options.total
+        ? `<div class="liste-offres__pied"><button class="bouton bouton--secondaire" type="button" data-action="voir-plus">Voir plus d’offres (${options.nombreAffichees} sur ${options.total})</button></div>`
+        : ''
+    }
   `;
 }

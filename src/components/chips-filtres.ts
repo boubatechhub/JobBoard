@@ -13,9 +13,8 @@ interface Chip {
 }
 
 const LIBELLES_FENETRE: Record<string, string> = {
-  '1': 'Publiées aujourd’hui',
-  '7': 'Publiées cette semaine',
-  '14': 'Publiées sous 14 jours',
+  '1': 'Publiées sous 24 h',
+  '7': 'Publiées sous 7 jours',
   '30': 'Publiées sous 30 jours',
 };
 
@@ -23,8 +22,16 @@ function construireChips(filtres: Filtres): Chip[] {
   const chips: Chip[] = [];
 
   if (filtres.sauvegardees) chips.push({ champ: 'sauvegardees', libelle: 'Offres sauvegardées' });
+  if (filtres.recherche.trim())
+    chips.push({ champ: 'recherche', libelle: `« ${filtres.recherche.trim()} »` });
   if (filtres.contractType !== TOUS) {
     chips.push({ champ: 'contractType', libelle: filtres.contractType });
+  }
+  if (filtres.source !== TOUS) {
+    chips.push({
+      champ: 'source',
+      libelle: filtres.source === 'airfrance' ? 'Air France' : 'France Travail',
+    });
   }
   if (filtres.publiee !== TOUS) {
     chips.push({
@@ -60,5 +67,10 @@ export function chipsFiltres(filtres: Filtres): string {
     )
     .join('');
 
-  return `<ul class="chips" aria-label="Critères actifs">${contenu}</ul>`;
+  return `
+    <div class="chips-actifs">
+      <ul class="chips" aria-label="Critères actifs">${contenu}</ul>
+      <button type="button" class="bouton bouton--texte" data-action="tout-effacer">Tout effacer</button>
+    </div>
+  `;
 }

@@ -20,6 +20,8 @@ export interface PosteOuvert {
   datePublication: string | null;
   /** Lien vers l'annonce d'origine. */
   lien: string | null;
+  /** Flux qui a fourni l'annonce. */
+  source: 'france-travail' | 'airfrance';
   /** Texte brut, balises retirees : jamais injecte tel quel. */
   descriptionPoste: string;
   profilRecherche: string;

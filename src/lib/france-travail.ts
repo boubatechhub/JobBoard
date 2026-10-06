@@ -161,17 +161,27 @@ function premiereCategorie(item: Enregistrement): string | null {
 }
 
 /**
- * Retrouve le tableau d'annonces, que la reponse soit le tableau lui-meme ou
- * qu'elle l'enveloppe (`items`, `body`, `data`, `results`).
+ * Retrouve les annonces, qu'elles soient le tableau lui-meme, enveloppees sous
+ * un nom courant, ou reparties entre les flux `francetravail` et `airfrance`.
  */
 export function extraireItems(donnees: unknown): Enregistrement[] {
-  if (Array.isArray(donnees)) return donnees.filter(estObjet);
+  const annoter = (valeur: unknown, source: PosteOuvert['source']): Enregistrement[] =>
+    Array.isArray(valeur)
+      ? valeur.filter(estObjet).map((item) => ({ ...item, __source: source }))
+      : [];
+
+  if (Array.isArray(donnees)) return annoter(donnees, 'france-travail');
 
   if (estObjet(donnees)) {
     for (const cle of ['items', 'body', 'data', 'results', 'value']) {
       const valeur = donnees[cle];
-      if (Array.isArray(valeur)) return valeur.filter(estObjet);
+      if (Array.isArray(valeur)) return annoter(valeur, 'france-travail');
     }
+
+    return [
+      ...annoter(donnees['francetravail'], 'france-travail'),
+      ...annoter(donnees['airfrance'], 'airfrance'),
+    ];
   }
   return [];
 }
@@ -186,7 +196,9 @@ export function contientTableau(donnees: unknown): boolean {
   if (Array.isArray(donnees)) return true;
   if (!estObjet(donnees)) return false;
 
-  return ['items', 'body', 'data', 'results', 'value'].some((cle) => Array.isArray(donnees[cle]));
+  return ['items', 'body', 'data', 'results', 'value', 'francetravail', 'airfrance'].some((cle) =>
+    Array.isArray(donnees[cle]),
+  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -204,33 +216,39 @@ export function contientTableau(donnees: unknown): boolean {
  * a ce que le flux a effectivement renvoye.
  */
 export function parserPostes(donnees: unknown): PosteOuvert[] {
-  const postes: PosteOuvert[] = [];
+  const postes = new Map<string, PosteOuvert>();
 
   for (const item of extraireItems(donnees)) {
     const titre = texte(item, 'title', 'titre', 'name');
     if (!titre) continue;
 
+    const source: PosteOuvert['source'] =
+      item['__source'] === 'airfrance' ? 'airfrance' : 'france-travail';
     const intitule = extraireIntitule(titre) || titre;
     const reference = extraireReference(titre);
     const lien = texte(item, 'link', 'url', 'guid', 'permalink');
     const publiee = texte(item, 'pubDate', 'published', 'date', 'dateCreated', 'isoDate');
     const description = texte(item, 'description', 'summary', 'content', 'contentSnippet') ?? '';
 
-    const { poste, profil } = parserDescription(description);
+    const { poste: descriptionPoste, profil } = parserDescription(description);
 
-    postes.push({
-      id: reference ?? lien ?? `${intitule}-${postes.length}`,
+    const poste: PosteOuvert = {
+      id: reference ?? lien ?? `${intitule}-${postes.size}`,
       reference,
       intitule,
       contrat: premiereCategorie(item),
       datePublication: publiee ? enDateIso(publiee) : null,
       lien,
-      descriptionPoste: poste,
+      source,
+      descriptionPoste,
       profilRecherche: profil,
-    });
+    };
+
+    const existant = postes.get(poste.id);
+    if (!existant || source === 'airfrance') postes.set(poste.id, poste);
   }
 
-  return postes;
+  return [...postes.values()];
 }
 
 /** Types de contrat presents dans le lot, pour alimenter le filtre. */

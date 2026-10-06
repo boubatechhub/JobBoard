@@ -26,7 +26,7 @@ function versJob(poste: PosteOuvert): Job {
     description: poste.descriptionPoste,
     profile: poste.profilRecherche,
     sourceUrl: poste.lien,
-    source: 'france-travail',
+    source: poste.source,
   };
 }
 

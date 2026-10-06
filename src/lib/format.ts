@@ -20,13 +20,18 @@ export function formaterDate(iso: string): string {
 export function formaterAnciennete(iso: string, maintenant: Date = new Date()): string {
   const jours = Math.floor((maintenant.getTime() - enDate(iso).getTime()) / JOUR_MS);
 
-  if (jours <= 0) return "aujourd'hui";
-  if (jours === 1) return 'hier';
-  if (jours < 7) return `il y a ${jours} jours`;
-  if (jours < 14) return 'il y a 1 semaine';
-  if (jours < 31) return `il y a ${Math.floor(jours / 7)} semaines`;
-  if (jours < 61) return 'il y a 1 mois';
-  return `il y a ${Math.floor(jours / 30)} mois`;
+  if (jours <= 0) return "Aujourd'hui";
+  if (jours === 1) return 'Hier';
+  if (jours < 7) return `Il y a ${jours} jours`;
+  if (jours < 14) return 'Il y a 1 semaine';
+  if (jours < 31) return `Il y a ${Math.floor(jours / 7)} semaines`;
+  if (jours < 61) return 'Il y a 1 mois';
+  return `Il y a ${Math.floor(jours / 30)} mois`;
+}
+
+export function estNouveau(iso: string, maintenant: Date = new Date()): boolean {
+  const jours = Math.floor((maintenant.getTime() - enDate(iso).getTime()) / JOUR_MS);
+  return jours >= 0 && jours < 3;
 }
 
 /** "12 offres" / "1 offre" / "Aucune offre" */
@@ -36,16 +41,31 @@ export function accorderOffres(nombre: number): string {
   return `${new Intl.NumberFormat('fr-FR').format(nombre)} offres`;
 }
 
+export function formaterCompteur(nombre: number, recherche: string): string {
+  const total = accorderOffres(nombre);
+  const requete = recherche.trim();
+  return requete ? `${total} pour « ${requete} »` : total;
+}
+
 /**
  * Nom lisible d'une source d'offres. La cle brute reste dans les donnees ;
  * seul l'affichage est traduit.
  */
 const LIBELLES_SOURCE: Record<string, string> = {
   'france-travail': 'France Travail',
+  francetravail: 'France Travail',
+  airfrance: 'Air France',
 };
 
 export function libelleSource(source: string): string {
   return LIBELLES_SOURCE[source] ?? source;
+}
+
+export function cleSource(source: string): string {
+  const normalisee = source.toLowerCase().replace(/[^a-z]/g, '');
+  if (normalisee === 'airfrance') return 'airfrance';
+  if (normalisee === 'francetravail') return 'francetravail';
+  return source;
 }
 
 /** Initiales d'une entreprise, utilisees a defaut de logo. */

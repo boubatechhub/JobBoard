@@ -1,5 +1,6 @@
 import { TOUS } from '../types/job';
 import type { CritereTri, Filtres, Job } from '../types/job';
+import { cleSource } from './format';
 
 /**
  * Moteur de recherche cote client : filtrage, scoring et tri.
@@ -18,7 +19,7 @@ function normaliser(texte: string): string {
 }
 
 /** Poids de chaque champ dans le score de pertinence. */
-const POIDS = { titre: 10, reference: 6, contrat: 3, description: 1 } as const;
+const POIDS = { titre: 10, description: 2, profil: 1 } as const;
 
 interface ChampIndexe {
   valeur: string;
@@ -28,9 +29,8 @@ interface ChampIndexe {
 function indexer(job: Job): ChampIndexe[] {
   return [
     { valeur: normaliser(job.title), poids: POIDS.titre },
-    { valeur: normaliser(job.reference ?? ''), poids: POIDS.reference },
-    { valeur: normaliser(job.contractType ?? ''), poids: POIDS.contrat },
     { valeur: normaliser(job.description), poids: POIDS.description },
+    { valeur: normaliser(job.profile), poids: POIDS.profil },
   ];
 }
 
@@ -87,6 +87,7 @@ function fraicheur(job: Job, maintenant: Date): number {
 function correspondAuxFiltres(job: Job, filtres: Filtres, sauvegardes: Set<string>): boolean {
   if (filtres.sauvegardees && !sauvegardes.has(job.id)) return false;
   if (filtres.contractType !== TOUS && job.contractType !== filtres.contractType) return false;
+  if (filtres.source !== TOUS && cleSource(job.source) !== cleSource(filtres.source)) return false;
   return true;
 }
 
@@ -98,7 +99,8 @@ function dansLaFenetre(job: Job, filtres: Filtres, maintenant: Date): boolean {
   const jours = Math.floor(
     (maintenant.getTime() - new Date(`${job.publishedAt}T00:00:00`).getTime()) / JOUR_MS,
   );
-  return jours <= limite;
+  if (filtres.publiee === '1') return jours === 0;
+  return jours >= 0 && jours <= limite;
 }
 
 /** Predicat unique : filtres, fenetre de publication et requete textuelle. */
@@ -136,8 +138,6 @@ function comparer(a: JobScore, b: JobScore, tri: CritereTri, maintenant: Date): 
     }
     case 'recent':
       return dateB.localeCompare(dateA);
-    case 'ancien':
-      return dateA.localeCompare(dateB);
   }
 }
 
@@ -185,6 +185,24 @@ export function compterParContrat(
   return comptes;
 }
 
+export function compterParSource(
+  jobs: Job[],
+  filtres: Filtres,
+  sauvegardes: Set<string> = new Set(),
+  maintenant: Date = new Date(),
+): Map<string, number> {
+  const sansSource: Filtres = { ...filtres, source: TOUS };
+  const comptes = new Map<string, number>();
+  for (const job of jobs) {
+    if (evaluer(job, sansSource, sauvegardes, sansSource.recherche.trim(), maintenant) === null) {
+      continue;
+    }
+    const source = cleSource(job.source);
+    comptes.set(source, (comptes.get(source) ?? 0) + 1);
+  }
+  return comptes;
+}
+
 /** Types de contrat presents dans le lot, pour initialiser le filtre. */
 export function contratsDisponibles(jobs: Job[]): string[] {
   const contrats = new Set<string>();
@@ -198,6 +216,7 @@ export function contratsDisponibles(jobs: Job[]): string[] {
 export function compterFiltresActifs(filtres: Filtres): number {
   let total = 0;
   if (filtres.contractType !== TOUS) total += 1;
+  if (filtres.source !== TOUS) total += 1;
   if (filtres.publiee !== TOUS) total += 1;
   if (filtres.sauvegardees) total += 1;
   return total;

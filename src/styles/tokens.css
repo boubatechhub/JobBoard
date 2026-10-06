@@ -42,6 +42,10 @@
   /* --- Statuts --- */
   --alerte: #9c3d16;
   --alerte-doux: #fbeee7;
+  --source-ft-texte: #234f9b;
+  --source-ft-fond: #e7efff;
+  --source-air-texte: #9b2535;
+  --source-air-fond: #fce9eb;
 
   /* --- Typographie --- */
   --police: 'Schibsted Grotesk', 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -118,6 +122,10 @@
 
   --alerte: #f0a077;
   --alerte-doux: #241610;
+  --source-ft-texte: #a9c6ff;
+  --source-ft-fond: #17233b;
+  --source-air-texte: #ffabb5;
+  --source-air-fond: #371b20;
 
   --ombre-flottant: 0 1px 2px rgb(0 0 0 / 50%), 0 12px 32px -8px rgb(0 0 0 / 60%);
   --ombre-pouce: 0 1px 2px rgb(0 0 0 / 40%);
