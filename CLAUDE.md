@@ -30,9 +30,9 @@ Détection des doublons
     ↓
 Base de données
     ↓
-Backend / API
+Backend / API 
     ↓
-Moteur de recherche et de filtrage
+Moteur de recherche et de filtrage 
     ↓
 Interface utilisateur
     ↓
